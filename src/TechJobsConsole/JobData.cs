@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -38,6 +39,29 @@ namespace TechJobsConsole
             return values;
         }
 
+        public static List<Dictionary<string, string>> FindByValue(string searchTerm)
+        //public static string FindByValue(string searchTerm)
+        {
+            // load data, if not already loaded
+            LoadData();
+
+            List<Dictionary<string, string>> jobsFound = new List<Dictionary<string, string>>();
+
+            for (int i = 0; i < AllJobs.Count; i++)
+            {
+                foreach (KeyValuePair<string, string> column in AllJobs[i])
+                {
+
+                    if (column.Value.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        jobsFound.Add(AllJobs[i]);
+                        continue;
+                    }
+                }
+            }
+
+            return (jobsFound);
+        }
         public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
         {
             // load data, if not already loaded
@@ -70,6 +94,8 @@ namespace TechJobsConsole
             }
 
             List<string[]> rows = new List<string[]>();
+
+            //string[] files = Directory.GetFiles(Directory.GetCurrentDirectory());
 
             using (StreamReader reader = File.OpenText("job_data.csv"))
             {
